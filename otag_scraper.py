@@ -4,7 +4,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import ChromiumOptions
 
-
 # Set up ChromeDriver settings
 chromedriver_path = '/usr/bin/chromedriver'
 service = Service(chromedriver_path)
@@ -12,48 +11,51 @@ options = ChromiumOptions()
 options.add_argument("--headless=new")
 
 
-def find_tags(set_code, collector_number, mode):
+class Card:
+    def __init__(self, name):
+        self.name = name
+        self.link = self.find_link(self.name)
+        self.tags = self.find_tags(self.link)
 
-    print(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
+    def find_tags(link):
 
-    # Initialise driver
-    driver = webdriver.Chrome(options=options, service=service)
-    driver.get(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
+        print("Which tags would you like to search for? (all/art/card)")
+        mode = input('> ')
 
-    # Scroll down page
-    for _ in range(100):
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # Initialise driver
+        driver = webdriver.Chrome(options=options, service=service)
+        driver.get(link)
 
-    # Find elements based on mode selected
-    # 'all' = all tags
-    # 'art' = artwork tags only
-    # 'card' = card tags only
-    if mode == 'all':
-        tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/')]")
-    elif mode == 'art':
-        tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/artwork/')]")
-    elif mode == 'card':
-        tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/card/')]")
+        # Scroll down page
+        for _ in range(100):
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-    # Convert tags to strings and append to new list
-    o_tags = []
-    for tag in tags:
-        tag_text = tag.text
-        o_tags.append(tag.text)
+        # Find elements based on mode selected
+        # 'all' = all tags
+        # 'art' = artwork tags only
+        # 'card' = card tags only
+        if mode == 'all':
+            tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/')]")
+        elif mode == 'art':
+            tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/artwork/')]")
+        elif mode == 'card':
+            tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/card/')]")
 
-    for tag in o_tags:
-        print(tag)
+        # Convert tags to strings and append to new list
+        o_tags = []
+        for tag in tags:
+            tag_text = tag.text
+            o_tags.append(tag.text)
 
-    driver.quit()
+        for tag in o_tags:
+            print(tag)
 
-print("Search Magic: The Gathering card")
-query = input('> ')
-print("Which tags would you like to search for? (all/art/card)")
-tag_query = input('> ')
-print(f"Obtaining {tag_query} tags for {query}...")
+        driver.quit()
 
-card = scrython.cards.Named(fuzzy=query)
-set_code = card.set_code()
-collector_number = card.collector_number()
+        return o_tags
 
-find_tags(set_code, collector_number, tag_query)
+    def find_link(name):
+        card = scrython.cards.Named(fuzzy=query)
+        set_code = card.set_code()
+        collector_number = card.collector_number()
+        return(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
