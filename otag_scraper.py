@@ -12,7 +12,8 @@ options = ChromiumOptions()
 options.add_argument("--headless=new")
 
 
-def find_tags(set_code, collector_number):
+def find_tags(set_code, collector_number, mode):
+
     print(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
 
     # Initialise driver
@@ -23,15 +24,22 @@ def find_tags(set_code, collector_number):
     for _ in range(100):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-    # Find all elements with class "tag-row"
-    tags = driver.find_elements(By.CLASS_NAME, "tag-row")
+    # Find elements based on mode selected
+    # 'all' = all tags
+    # 'art' = artwork tags only
+    # 'card' = card tags only
+    if mode == 'all':
+        tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/')]")
+    elif mode == 'art':
+        tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/artwork/')]")
+    elif mode == 'card':
+        tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/card/')]")
 
     # Convert tags to strings and append to new list
     o_tags = []
     for tag in tags:
         tag_text = tag.text
-        if 'Annotation' not in tag_text:
-            o_tags.append(tag.text)
+        o_tags.append(tag.text)
 
     for tag in o_tags:
         print(tag)
@@ -40,10 +48,12 @@ def find_tags(set_code, collector_number):
 
 print("Search Magic: The Gathering card")
 query = input('> ')
-print(f"Obtaining Oracle Tags for {query}...")
+print("Which tags would you like to search for? (all/art/card)")
+tag_query = input('> ')
+print(f"Obtaining {tag_query} tags for {query}...")
 
 card = scrython.cards.Named(fuzzy=query)
 set_code = card.set_code()
 collector_number = card.collector_number()
 
-find_tags(set_code, collector_number)
+find_tags(set_code, collector_number, tag_query)
