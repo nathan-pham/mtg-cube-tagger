@@ -17,7 +17,7 @@ class Card:
         self.link = self.find_link(self.name)
         self.tags = self.find_tags(self.link)
 
-    def find_tags(link):
+    def find_tags(self, link):
 
         print("Which tags would you like to search for? (all/art/card)")
         mode = input('> ')
@@ -54,8 +54,13 @@ class Card:
 
         return o_tags
 
-    def find_link(name):
+    def find_link(self, name):
         card = scrython.cards.Named(fuzzy=name)
         set_code = card.set_code()
         collector_number = card.collector_number()
         return(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
+
+if __name__ == "__main__":
+    print("What Magic: The Gathering card would you like the tags for?")
+    card_name = input("> ")
+    card1 = Card(card_name)
