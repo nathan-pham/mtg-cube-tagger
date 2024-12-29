@@ -55,7 +55,7 @@ class Card:
         return o_tags
 
     def find_link(name):
-        card = scrython.cards.Named(fuzzy=query)
+        card = scrython.cards.Named(fuzzy=name)
         set_code = card.set_code()
         collector_number = card.collector_number()
         return(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
