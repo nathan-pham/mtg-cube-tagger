@@ -1,26 +1,28 @@
 import scrython
-from bs4 import BeautifulSoup
-import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 
+# Define Chromedriver path for Webdriver
 chromedriver_path = '/usr/bin/chromedriver'
 service = Service(chromedriver_path)
-
 
 def find_tags(set_code, collector_number):
     print(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
 
+    # Initialise driver
     driver = webdriver.Chrome(service=service)
     driver.get(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
 
+    # Scroll down page
     for _ in range(100):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
+    # Find all elements with class "tag-row"
     tags = driver.find_elements(By.CLASS_NAME, "tag-row")
-    o_tags = []
 
+    # Convert tags to strings and append to new list
+    o_tags = []
     for tag in tags:
         tag_text = tag.text
         if 'Annotation' not in tag_text:
