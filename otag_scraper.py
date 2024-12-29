@@ -2,16 +2,21 @@ import scrython
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import ChromiumOptions
 
-# Define Chromedriver path for Webdriver
+
+# Set up ChromeDriver settings
 chromedriver_path = '/usr/bin/chromedriver'
 service = Service(chromedriver_path)
+options = ChromiumOptions()
+options.add_argument("--headless=new")
+
 
 def find_tags(set_code, collector_number):
     print(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
 
     # Initialise driver
-    driver = webdriver.Chrome(service=service)
+    driver = webdriver.Chrome(options=options, service=service)
     driver.get(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
 
     # Scroll down page
@@ -30,6 +35,8 @@ def find_tags(set_code, collector_number):
 
     for tag in o_tags:
         print(tag)
+
+    driver.quit()
 
 print("Search Magic: The Gathering card")
 query = input('> ')
