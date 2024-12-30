@@ -14,7 +14,7 @@ options.add_argument('--blink-settings=imagesEnabled=false')
 
 class Card:
     def __init__(self, name, mode):
-        self.scryfall = scrython.cards.Named(fuzzy=name)
+        self.scryfall = scrython.cards.Named(exact=name)
         self.name = self.scryfall.name()
         self.link = self.find_link()
         self.tags = self.find_tags(self.link, mode)
@@ -27,7 +27,7 @@ class Card:
         driver.get(link)
 
         # Scroll down page
-        for _ in range(50):
+        for _ in range(100):
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
         # Find elements based on mode selected
@@ -76,27 +76,20 @@ class cardList:
     def __init__(self, csvPath):
         cardList.csvPath = csvPath
         cardList.cards = cardList.import_cards(self)
-        cardList.namePos = int
-        cardList.tagsPos = int
+        cardList.write_tags(self)
     
     def import_cards(self):
 
         cards = []
 
         with open(self.csvPath, newline='') as csvfile:
-            reader = csv.reader(csvfile)
+            reader = csv.DictReader(csvfile)
 
-            # Find which columns are the name and tag columns
-            firstRow = next(reader)
-            for i in range(len(firstRow)):
-                if (firstRow)[i] == 'name':
-                    self.namePos = i
-                elif (firstRow)[i] == 'tags':
-                    self.tagsPos = i
+            next(reader)
 
             for i in reader:
                 print("Loading...")
-                cards.append(Card(i[self.namePos], "all"))
+                cards.append(Card(i['name'], "all"))
     
         return cards
     
