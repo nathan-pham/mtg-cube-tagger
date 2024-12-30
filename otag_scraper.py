@@ -46,6 +46,19 @@ class Card:
         for tag in tags:
             o_tags.append(tag.text)
 
+        # If tags failed to load the first time
+        if o_tags == []:
+            for _ in range(100):
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            if mode == 'all':
+                tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/')]")
+            elif mode == 'art':
+                tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/artwork/')]")
+            elif mode == 'card':
+                tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/card/')]")
+            for tag in tags:
+                o_tags.append(tag.text)
+
         driver.quit()
 
         # Verbose debuggging
