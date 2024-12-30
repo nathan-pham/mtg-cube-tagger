@@ -13,8 +13,9 @@ options.add_argument("--headless=new")
 
 class Card:
     def __init__(self, name):
-        self.name = name
-        self.link = self.find_link(self.name)
+        self.scryfall = scrython.cards.Named(fuzzy=name)
+        self.name = self.scryfall.name()
+        self.link = self.find_link()
         self.tags = self.find_tags(self.link)
 
     def find_tags(self, link):
@@ -47,20 +48,19 @@ class Card:
             tag_text = tag.text
             o_tags.append(tag.text)
 
-        for tag in o_tags:
-            print(tag)
-
         driver.quit()
 
         return o_tags
 
-    def find_link(self, name):
-        card = scrython.cards.Named(fuzzy=name)
-        set_code = card.set_code()
-        collector_number = card.collector_number()
+    def find_link(self):
+        set_code = self.scryfall.set_code()
+        collector_number = self.scryfall.collector_number()
         return(f"https://tagger.scryfall.com/card/{set_code}/{collector_number}")
 
 if __name__ == "__main__":
     print("What Magic: The Gathering card would you like the tags for?")
     card_name = input("> ")
     card1 = Card(card_name)
+    print(card1.name)
+    print(card1.link)
+    print(card1.tags)
