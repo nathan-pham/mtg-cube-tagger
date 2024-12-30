@@ -86,6 +86,18 @@ class cardList:
                 cards.append(Card(i[self.namePos], "all"))
     
         return cards
+    
+    def write_tags(self):
+        with open(self.csvPath, newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, 'tags')
+            next(writer)
+
+            for i in range(1, len(writer)):
+                writer.writerow({'tags': cardList.cards[i].tags})
+                i += 1
+
+            writer.close()
+
 
 if __name__ == "__main__":
     cardList('example.csv')
