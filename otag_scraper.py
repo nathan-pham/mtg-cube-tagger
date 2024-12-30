@@ -26,36 +26,24 @@ class Card:
         driver = webdriver.Chrome(options=options, service=service)
         driver.get(link)
 
-        # Scroll down page
-        for _ in range(100):
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-        # Find elements based on mode selected
-        # 'all' = all tags
-        # 'art' = artwork tags only
-        # 'card' = card tags only
-        if mode == 'all':
-            tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/')]")
-        elif mode == 'art':
-            tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/artwork/')]")
-        elif mode == 'card':
-            tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/card/')]")
-
-        # Convert tags to strings and append to new list
         o_tags = []
-        for tag in tags:
-            o_tags.append(tag.text)
+        while not o_tags:
 
-        # If tags failed to load the first time
-        if o_tags == []:
+            print(f"Searching {self.name}...")
+
+            # Scroll down page
             for _ in range(100):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+            # Find elements based on mode selected
             if mode == 'all':
                 tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/')]")
             elif mode == 'art':
                 tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/artwork/')]")
             elif mode == 'card':
                 tags = driver.find_elements(By.XPATH, "//a[contains(@href, '/tags/card/')]")
+
+            # Convert tags to strings and append to new list
             for tag in tags:
                 o_tags.append(tag.text)
 
@@ -106,6 +94,6 @@ class cardList:
 
 
 if __name__ == "__main__":
-    cardList('example.csv')
+    cardList('card_lists/cardlist.csv')
     for i in cardList.cards:
         print(i.tags)
