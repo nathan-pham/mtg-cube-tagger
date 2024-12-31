@@ -14,6 +14,10 @@ Given an exported CSV file from a CubeCobra cube, this program searches every ca
     - asyncio
     - aiohttp
 
+## Known Issues
+- Especially with longer lists/cubes, the output CSV file might include duplicates which weren't there initially
+- The code has only been tested with CSV exported without 'Use Sort' and 'Use Filter' options, so with those enabled, I'm not sure how the code will function
+
 ## Usage
 1. Export your cube from CubeCobra as a CSV (this program has only been tested with the 'Use Sort' and 'Use Filter' options turned off during exporting)
 2. Place your cube into the card_lists folder and rename it to cardlist.csv
