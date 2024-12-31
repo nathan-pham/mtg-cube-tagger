@@ -35,6 +35,8 @@ Start 12:17 PM, Finish 12:35 PM finished scraping portion (some tags missing)
 
 Start 11:52AM, Finish 12:00 failiure
 
-Start 12:00, Finish 12:03 failiure
+Start 12:00PM, Finish 12:03 failiure
 
-Start 12:03, Finish 12:19 success (both tag scraping and CSV writing) = 16 minutes for 360 cards
+Start 12:03PM, Finish 12:19 success (both tag scraping and CSV writing) = 16 minutes for 360 cards
+
+Start 3:04PM, Finish 3:29 (both tag scraping and CSV writing) = 25 minutes for 395 cards
