@@ -72,7 +72,7 @@ class cardList:
         cardList.allTags = []
         cardList.cards = cardList.import_cards(self)
         cardList.write_tags(self)
-        cardList.write_stats
+        cardList.write_stats(self)
     
     def import_cards(self):
         cards = []
