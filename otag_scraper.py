@@ -27,7 +27,9 @@ class Card:
         driver.get(link)
 
         o_tags = []
-        while not o_tags:
+
+        i = 0
+        while not o_tags and i < 10:
 
             print(f"Searching {self.name}...")
 
@@ -46,6 +48,8 @@ class Card:
             # Convert tags to strings and append to new list
             for tag in tags:
                 o_tags.append(tag.text.strip('"'))
+
+            i += 1
 
         driver.quit()
 
@@ -76,8 +80,7 @@ class cardList:
             cardList.fieldnames = reader.fieldnames
 
             for row in reader:
-                print("Loading...")
-                cards.append(Card(row['name'], "all"))
+                cards.append(Card(row['name'], "card"))
                 cardList.csvFile.append(row)
     
         csvfile.close()
@@ -108,4 +111,4 @@ class cardList:
         
 
 if __name__ == "__main__":
-    cardList('card_lists/short_cardlist.csv')
+    cardList('card_lists/cardlist.csv')
