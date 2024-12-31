@@ -45,7 +45,7 @@ class Card:
 
             # Convert tags to strings and append to new list
             for tag in tags:
-                o_tags.append(tag.text)
+                o_tags.append(tag.text.strip('"'))
 
         driver.quit()
 
@@ -63,37 +63,49 @@ class Card:
 class cardList:
     def __init__(self, csvPath):
         cardList.csvPath = csvPath
+        cardList.csvFile = []
         cardList.cards = cardList.import_cards(self)
         cardList.write_tags(self)
+        cardList.fieldnames = []
     
     def import_cards(self):
-
         cards = []
-
         with open(self.csvPath, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
 
-            next(reader)
+            cardList.fieldnames = reader.fieldnames
 
-            for i in reader:
+            for row in reader:
                 print("Loading...")
-                cards.append(Card(i['name'], "all"))
+                cards.append(Card(row['name'], "all"))
+                cardList.csvFile.append(row)
     
+        csvfile.close()
         return cards
     
     def write_tags(self):
+
+        for i in range(len(self.csvFile)):
+            tags = ";".join(self.cards[i].tags)
+            self.csvFile[i]['tags'] = tags
+
+        with open(self.csvPath, mode='w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            writer.writeheader()
+        
+            writer.writerows(self.csvFile)
+        
+    def print_cards(self):
+        """
+        Debugging function
+        """
         with open(self.csvPath, newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, 'tags')
-            next(writer)
-
-            for i in range(1, len(writer)):
-                writer.writerow({'tags': cardList.cards[i].tags})
-                i += 1
-
-            writer.close()
-
+            reader = csv.DictReader(csvfile)
+            print(reader)
+        
+            for row in reader:
+                print(row)
+        
 
 if __name__ == "__main__":
-    cardList('card_lists/cardlist.csv')
-    for i in cardList.cards:
-        print(i.tags)
+    cardList('card_lists/short_cardlist.csv')
