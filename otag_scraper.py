@@ -68,9 +68,11 @@ class cardList:
     def __init__(self, csvPath):
         cardList.csvPath = csvPath
         cardList.csvFile = []
+        cardList.fieldnames = []
+        cardList.allTags = []
         cardList.cards = cardList.import_cards(self)
         cardList.write_tags(self)
-        cardList.fieldnames = []
+        cardList.write_stats
     
     def import_cards(self):
         cards = []
@@ -80,7 +82,12 @@ class cardList:
             cardList.fieldnames = reader.fieldnames
 
             for row in reader:
-                cards.append(Card(row['name'], "card"))
+                newCard = Card(row['name'], "card")
+                for tag in newCard.tags:
+                    if tag not in cardList.allTags:
+                        cardList.allTags.append(tag)
+
+                cards.append(newCard)
                 cardList.csvFile.append(row)
     
         csvfile.close()
@@ -108,6 +115,15 @@ class cardList:
         
             for row in reader:
                 print(row)
+
+    def write_stats(self):
+        """
+        A function that writes all the unique tags read into a txt file
+        """
+        with open('tags.txt', mode = 'x') as tagsfile:
+            for tag in self.allTags:
+                tagsfile.write(f"{tag}\n")
+        tagsfile.close()
         
 
 if __name__ == "__main__":
