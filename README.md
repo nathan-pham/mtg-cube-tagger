@@ -2,9 +2,10 @@
 ## Background
 As someone interested in Magic: The Gathering cube design, being able to categorise my cards by their function in the game is extremely useful, but there isn't a way to do so automatically using CubeCobra, so I wrote a script to automatically add Scryfall tagger data to a CubeCobra cube.
 
-
-## Function
-Given an exported CSV file from a CubeCobra cube, this program uses the Scryfall API to find tags (artwork, card function or both) for each card and writes them to the 'tag' field in the CSV. The now updated CSV can be uploaded back into CubeCobra with all the cards having their tags.
+## Usage
+1. Export your cube from CubeCobra in CSV format
+2. Run the mtg-cube-tagger.py program (after installing dependencies)
+3. Follow prompts from program
 
 ## Dependencies
 - This program was programmed/tested on Python 3.12.3
