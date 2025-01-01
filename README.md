@@ -17,11 +17,10 @@ As someone interested in Magic: The Gathering cube design, being able to categor
 - The code has only been tested with CSV exported without 'Use Sort' and 'Use Filter' options, so with those enabled, I'm not sure how the code will function
 
 ## Usage
-1. Export your cube from CubeCobra as a CSV (this program has only been tested with the 'Use Sort' and 'Use Filter' options turned off during exporting)
-2. Place your cube into the card_lists folder and rename it to cardlist.csv
-3. By default, the program is set to only search for the card function tags. To change this, you must edit line 83 of otag_scraper.py and change the "card" argument to either "all", "art" or "card".
-4. Save the program and run.
-5. After its completion your CSV file should be updated with all the tags.
+## Usage
+1. Export your cube from CubeCobra in CSV format
+2. Run the mtg-cube-tagger.py program (after installing dependencies)
+3. Follow prompts from program
 
 ## Acknowledgements
 Thanks to the teams at Scryfall, CubeCobra and Scrython for all the hard work they've put in making these wonderful services for nerds like us.
