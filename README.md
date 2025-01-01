@@ -1,6 +1,6 @@
 # Scryfall Oracle-Tag Web Scraper
 ## Background
-As someone interested in Magic: The Gathering cube design, being able to categorise my cards by their function in the game is extremely useful, but there isn't a way to do so automatically using CubeCobra, nor is there a way to get the Oracle Tags of a card from Scryfall's Bulk Data as of yet. 
+As someone interested in Magic: The Gathering cube design, being able to categorise my cards by their function in the game is extremely useful, but there isn't a way to do so automatically using CubeCobra, ~~nor is there a way to get the Oracle Tags of a card from Scryfall's Bulk Data as of yet.~~ 
 
 Since going through the tagger pages for hundreds of cards and manually adding them to my cube on CubeCobra would be an arduous task, I decide to build this program.
 
