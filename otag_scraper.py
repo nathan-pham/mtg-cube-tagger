@@ -85,6 +85,41 @@ class cardList:
                 tagsfile.write(f"{tag}\n")
         tagsfile.close()
         
+    def load_tags(self):
+        print("Opening tag database...")
+
+        urlOracle = (f'https://api.scryfall.com/private/tags/oracle')
+        responseOracle = urlopen(urlOracle)
+
+        urlIllustration = (f'https://api.scryfall.com/private/tags/illustration')
+        responseIllustration = urlopen(urlIllustration)        
+        
+        if mode == 'all':
+            self.oracleTags = json.loads(responseOracle.read())
+            self.illustrationTagsTags = json.loads(responseIllustration.read())
+            
+        elif mode == 'oracle':
+            self.oracleTags = json.loads(responseOracle.read())
+
+        elif mode == 'illustration':
+            self.illustrationTagsTags = json.loads(responseIllustration.read())
+
+        print("Tag database initialised!")
+
+    def find_tags(self, oracleID):
+            oracle_tags = []
+
+            if self.oracleTags:
+                for tag in self.oracleTags['data']:
+                    if oracleID in tag['oracle_ids']:
+                        oracle_tags.append(tag['label'].strip('"'))
+
+            if self.illustrationTags:
+                for tag in self.illustrationTags['data']:
+                    if oracleID in tag['oracle_ids']:
+                        oracle_tags.append(tag['label'].strip('"'))   
+
+            return oracle_tags
 
 if __name__ == "__main__":
     cardList('card_lists/cardlist.csv')
