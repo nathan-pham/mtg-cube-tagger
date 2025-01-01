@@ -122,4 +122,11 @@ class cardList:
             return oracle_tags
 
 if __name__ == "__main__":
-    cardList('card_lists/cardlist.csv')
+    
+    print("Which tags do you want to load? (oracle/illustration/all)")
+    mode = input("> ")
+
+    print("What's the name of your cube? (eg. mycube.csv)")
+    cubeName = input("> ")
+
+    cardList(f"card_lists/{cubeName}", mode)
