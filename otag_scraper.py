@@ -2,6 +2,7 @@ import scrython
 import csv
 from urllib.request import urlopen
 import json
+import time
 
 class Card:
     def __init__(self, name):
@@ -34,8 +35,11 @@ class cardList:
             cardList.fieldnames = reader.fieldnames
 
             for row in reader:
+                # Rate limiting
+                time.sleep(150/1000)
+
                 newCard = Card(row['name'])
-                print(f"Searching tags for {newCard.name}...")
+                print(f"Loading tags for {newCard.name}...")
                 newCard.tags = self.find_tags(newCard.oracleID)
 
                 for tag in newCard.tags:
@@ -59,6 +63,8 @@ class cardList:
             writer.writeheader()
         
             writer.writerows(self.csvFile)
+
+        print(f"{len(self.csvFile)} cards successfully added tags to.")
         
     def print_cards(self):
         """
@@ -78,6 +84,7 @@ class cardList:
         with open('tags.txt', mode = 'x') as tagsfile:
             for tag in self.allTags:
                 tagsfile.write(f"{tag}\n")
+        print(f"Your list had {len(self.allTags)} unique tags.")
         tagsfile.close()
         
     def load_tags(self):
