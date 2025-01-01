@@ -33,6 +33,8 @@ Thanks to the teams at Scryfall, CubeCobra and Scrython for all the hard work th
 **Warning:** Due to the nature of web scraping, use this tool responsibly as to not abuse Scryfall servers/API calls in line with their TOS.
 
 ### Runtime test history
+
+**Version 1**
 Start 12:09 PM, Finish 12:11 PM (Scrython error)
 
 Start 12:17 PM, Finish 12:35 PM finished scraping portion (some tags missing)
@@ -44,3 +46,6 @@ Start 12:00PM, Finish 12:03 failiure
 Start 12:03PM, Finish 12:19 success (both tag scraping and CSV writing) = 16 minutes for 360 cards
 
 Start 3:04PM, Finish 3:29 (both tag scraping and CSV writing) = 25 minutes for 395 cards
+
+**Version 2**
+Start 2:34PM, Finish 2:34PM (both tag scraping and CSV writing) = <1 minute for 360 cards
