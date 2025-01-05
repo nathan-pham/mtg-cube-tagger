@@ -15,6 +15,7 @@ As someone interested in Magic: The Gathering cube design, being able to categor
 
 ## Known Issues
 - The code has only been tested with CSV exported without 'Use Sort' and 'Use Filter' options, so with those enabled, I'm not sure how the code will function
+- Doesn't deal with error inputs
 
 ## Usage
 1. Export your cube from CubeCobra in CSV format
