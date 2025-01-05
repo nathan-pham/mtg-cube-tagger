@@ -24,10 +24,15 @@ class cardList:
 
         cardList.allTags = {}
         cardList.cards = cardList.import_cards(self)
-        cardList.sortedTags = sorted(self.allTags, key = self.allTags.get, reverse = True)
-        cardList.tags_stats(self)
 
+        cardList.sortedTags = sorted(self.allTags, key = self.allTags.get, reverse = True)
+
+        cardList.tags_stats(self)
         cardList.cull_tags(self)
+
+        cardList.tags_stats(self)
+        cardList.delete_tags(self)
+
         cardList.write_tags(self)
         cardList.write_stats(self)
     
@@ -109,6 +114,23 @@ class cardList:
             del self.allTags[tag]
             self.sortedTags.remove(tag)
 
+    def delete_tags(self):
+        print("Do you want to remove some specific tags? (y/n)")
+        if input("> ") == 'y':
+            print("Input tags you want to remove (type 'exit' to exit): ")
+            delTags = []
+            while True:
+                query = input("> ")
+                if query == 'exit':
+                    break
+                elif query not in self.allTags.keys():
+                    print("Tag does not exist")
+                elif query in self.allTags.keys():
+                    delTags.append(query)
+
+        for tag in delTags: 
+            del self.allTags[tag]
+            self.sortedTags.remove(tag)
 
     def write_stats(self):
         """
