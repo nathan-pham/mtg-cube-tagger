@@ -36,7 +36,7 @@ class cardList:
 
             for row in reader:
                 # Rate limiting
-                time.sleep(150/1000)
+                time.sleep(0.1)
 
                 newCard = Card(row['name'])
                 print(f"Loading tags for {newCard.name}...")
