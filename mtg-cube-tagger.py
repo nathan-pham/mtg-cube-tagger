@@ -13,6 +13,7 @@ class Card:
 
 class cardList:
     def __init__(self, csvPath, mode):
+        cardList.mode = mode
         cardList.csvPath = csvPath
         cardList.csvFile = []
         cardList.fieldnames = []
@@ -129,14 +130,14 @@ class cardList:
         urlIllustration = (f'https://api.scryfall.com/private/tags/illustration')
         responseIllustration = urlopen(urlIllustration)        
         
-        if mode == 'all':
+        if self.mode == 'all':
             self.oracleTags = json.loads(responseOracle.read())
             self.illustrationTagsTags = json.loads(responseIllustration.read())
             
-        elif mode == 'oracle':
+        elif self.mode == 'oracle':
             self.oracleTags = json.loads(responseOracle.read())
 
-        elif mode == 'illustration':
+        elif self.mode == 'illustration':
             self.illustrationTagsTags = json.loads(responseIllustration.read())
 
         print("Tag database initialised!")
