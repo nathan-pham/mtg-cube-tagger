@@ -13,6 +13,7 @@ class Card:
 
 class cardList:
     def __init__(self, csvPath, mode):
+        cardList.mode = mode
         cardList.csvPath = csvPath
         cardList.csvFile = []
         cardList.fieldnames = []
@@ -21,8 +22,16 @@ class cardList:
         cardList.illustrationTags = []
         cardList.load_tags(self)
 
-        cardList.allTags = []
+        cardList.allTags = {}
         cardList.cards = cardList.import_cards(self)
+
+        cardList.sortedTags = sorted(self.allTags, key = self.allTags.get, reverse = True)
+
+        cardList.tags_stats(self)
+        cardList.cull_tags(self)
+
+        cardList.tags_stats(self)
+        cardList.delete_tags(self)
 
         cardList.write_tags(self)
         cardList.write_stats(self)
@@ -36,15 +45,17 @@ class cardList:
 
             for row in reader:
                 # Rate limiting
-                time.sleep(150/1000)
+                time.sleep(0.1)
 
                 newCard = Card(row['name'])
                 print(f"Loading tags for {newCard.name}...")
                 newCard.tags = self.find_tags(newCard.oracleID)
 
                 for tag in newCard.tags:
-                    if tag not in cardList.allTags:
-                        cardList.allTags.append(tag)
+                    if tag not in cardList.allTags.keys():
+                        cardList.allTags[tag] = 1
+                    elif tag in cardList.allTags.keys():
+                        cardList.allTags[tag] += 1
 
                 cards.append(newCard)
                 cardList.csvFile.append(row)
@@ -77,14 +88,61 @@ class cardList:
             for row in reader:
                 print(row)
 
+    def tags_stats(self):
+
+        print(f"Your list had {len(self.allTags.keys())} unique tags.")
+
+        print("Do you want to view your tags stats? (y/n)")
+        if input("> ") == 'y':
+            print("How many tags do you want to view?")
+            tagNo = int(input("> "))
+            for i in cardList.sortedTags[0:tagNo]:
+                print(f"{i}, {self.allTags[i]}")
+
+    def cull_tags(self):
+        print("Do you want to remove tags with less than a number of cards? (y/n)")
+        if input("> ") == 'y':
+            print("What is the minimum number of cards a tag must have?")
+            cardNo = int(input("> "))
+
+        delTags = []
+        for tag in self.allTags.keys():
+            if self.allTags[tag] < cardNo:
+                delTags.append(tag)
+
+        for tag in delTags: 
+            del self.allTags[tag]
+            self.sortedTags.remove(tag)
+            self.recursive_delete_tag(tag)
+
+    def delete_tags(self):
+        print("Do you want to remove some specific tags? (y/n)")
+        if input("> ") == 'y':
+            print("Input tags you want to remove (type 'exit' to exit): ")
+            delTags = []
+            while True:
+                query = input("> ")
+                if query == 'exit':
+                    break
+                elif query not in self.allTags.keys():
+                    print("Tag does not exist")
+                elif query in self.allTags.keys():
+                    delTags.append(query)
+
+        for tag in delTags: 
+            del self.allTags[tag]
+            self.sortedTags.remove(tag)
+            self.recursive_delete_tag(tag)
+
     def write_stats(self):
         """
         A function that writes all the unique tags read into a txt file
         """
+
         with open('tags.txt', mode = 'x') as tagsfile:
-            for tag in self.allTags:
-                tagsfile.write(f"{tag}\n")
-        print(f"Your list had {len(self.allTags)} unique tags.")
+            for tag in self.sortedTags:
+                tagsfile.write(f"{tag}, {self.allTags[tag]}\n")
+
         tagsfile.close()
         
     def load_tags(self):
@@ -96,14 +154,14 @@ class cardList:
         urlIllustration = (f'https://api.scryfall.com/private/tags/illustration')
         responseIllustration = urlopen(urlIllustration)        
         
-        if mode == 'all':
+        if self.mode == 'all':
             self.oracleTags = json.loads(responseOracle.read())
             self.illustrationTagsTags = json.loads(responseIllustration.read())
             
-        elif mode == 'oracle':
+        elif self.mode == 'oracle':
             self.oracleTags = json.loads(responseOracle.read())
 
-        elif mode == 'illustration':
+        elif self.mode == 'illustration':
             self.illustrationTagsTags = json.loads(responseIllustration.read())
 
         print("Tag database initialised!")
@@ -119,9 +177,15 @@ class cardList:
             if self.illustrationTags:
                 for tag in self.illustrationTags['data']:
                     if oracleID in tag['oracle_ids']:
-                        oracle_tags.append(tag['label'].strip('"'))   
+                        oracle_tags.append(tag['label'].strip('"'))
 
             return oracle_tags
+    
+    def recursive_delete_tag(self, delTag):
+        for card in self.cards:
+            for tag in card.tags:
+                if tag == delTag:
+                    card.tags.remove(tag)
 
 if __name__ == "__main__":
     
