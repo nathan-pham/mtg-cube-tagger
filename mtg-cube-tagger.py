@@ -21,8 +21,9 @@ class cardList:
         cardList.illustrationTags = []
         cardList.load_tags(self)
 
-        cardList.allTags = []
+        cardList.allTags = {}
         cardList.cards = cardList.import_cards(self)
+        cardList.tags_stats(self)
 
         cardList.write_tags(self)
         cardList.write_stats(self)
@@ -43,8 +44,10 @@ class cardList:
                 newCard.tags = self.find_tags(newCard.oracleID)
 
                 for tag in newCard.tags:
-                    if tag not in cardList.allTags:
-                        cardList.allTags.append(tag)
+                    if tag not in cardList.allTags.keys():
+                        cardList.allTags[tag] = 1
+                    elif tag in cardList.allTags.keys():
+                        cardList.allTags[tag] += 1
 
                 cards.append(newCard)
                 cardList.csvFile.append(row)
@@ -77,14 +80,28 @@ class cardList:
             for row in reader:
                 print(row)
 
+    def tags_stats(self):
+
+        print(f"Your list had {len(self.allTags.keys())} unique tags.")
+
+        sortedTags = sorted(self.allTags, key = self.allTags.get, reverse = True)
+
+        print("Do you want to view your tags stats? (y/n)")
+        if input("> ") == 'y':
+            print("How many tags do you want to view?")
+            tagNo = int(input("> "))
+            for i in sortedTags[0:tagNo]:
+                print(f"{i}, {self.allTags[i]}")
+
     def write_stats(self):
         """
         A function that writes all the unique tags read into a txt file
         """
+
         with open('tags.txt', mode = 'x') as tagsfile:
-            for tag in self.allTags:
-                tagsfile.write(f"{tag}\n")
-        print(f"Your list had {len(self.allTags)} unique tags.")
+            for tag in self.allTags.keys():
+                tagsfile.write(f"{tag}, {self.allTags[tag]}\n")
+
         tagsfile.close()
         
     def load_tags(self):
@@ -119,7 +136,7 @@ class cardList:
             if self.illustrationTags:
                 for tag in self.illustrationTags['data']:
                     if oracleID in tag['oracle_ids']:
-                        oracle_tags.append(tag['label'].strip('"'))   
+                        oracle_tags.append(tag['label'].strip('"'))
 
             return oracle_tags
 
