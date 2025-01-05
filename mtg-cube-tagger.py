@@ -23,8 +23,10 @@ class cardList:
 
         cardList.allTags = {}
         cardList.cards = cardList.import_cards(self)
+        cardList.sortedTags = sorted(self.allTags, key = self.allTags.get, reverse = True)
         cardList.tags_stats(self)
 
+        cardList.cull_tags(self)
         cardList.write_tags(self)
         cardList.write_stats(self)
     
@@ -84,14 +86,28 @@ class cardList:
 
         print(f"Your list had {len(self.allTags.keys())} unique tags.")
 
-        sortedTags = sorted(self.allTags, key = self.allTags.get, reverse = True)
-
         print("Do you want to view your tags stats? (y/n)")
         if input("> ") == 'y':
             print("How many tags do you want to view?")
             tagNo = int(input("> "))
-            for i in sortedTags[0:tagNo]:
+            for i in cardList.sortedTags[0:tagNo]:
                 print(f"{i}, {self.allTags[i]}")
+
+    def cull_tags(self):
+        print("Do you want to remove tags with less than a number of cards? (y/n)")
+        if input("> ") == 'y':
+            print("What is the minimum number of cards a tag must have?")
+            cardNo = int(input("> "))
+
+        delTags = []
+        for tag in self.allTags.keys():
+            if self.allTags[tag] < cardNo:
+                delTags.append(tag)
+
+        for tag in delTags: 
+            del self.allTags[tag]
+            self.sortedTags.remove(tag)
+
 
     def write_stats(self):
         """
@@ -99,7 +115,7 @@ class cardList:
         """
 
         with open('tags.txt', mode = 'x') as tagsfile:
-            for tag in self.allTags.keys():
+            for tag in self.sortedTags:
                 tagsfile.write(f"{tag}, {self.allTags[tag]}\n")
 
         tagsfile.close()
