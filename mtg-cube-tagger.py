@@ -113,6 +113,7 @@ class cardList:
         for tag in delTags: 
             del self.allTags[tag]
             self.sortedTags.remove(tag)
+            self.recursive_delete_tag(tag)
 
     def delete_tags(self):
         print("Do you want to remove some specific tags? (y/n)")
@@ -131,6 +132,7 @@ class cardList:
         for tag in delTags: 
             del self.allTags[tag]
             self.sortedTags.remove(tag)
+            self.recursive_delete_tag(tag)
 
     def write_stats(self):
         """
@@ -178,6 +180,12 @@ class cardList:
                         oracle_tags.append(tag['label'].strip('"'))
 
             return oracle_tags
+    
+    def recursive_delete_tag(self, delTag):
+        for card in self.cards:
+            for tag in card.tags:
+                if tag == delTag:
+                    card.tags.remove(tag)
 
 if __name__ == "__main__":
     
