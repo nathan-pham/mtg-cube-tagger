@@ -3,12 +3,13 @@ import csv
 from urllib.request import urlopen
 import json
 import time
+import requests
 
 class Card:
     def __init__(self, name):
         self.scryfall = scrython.cards.Named(exact=name)
-        self.name = self.scryfall.name()
-        self.oracleID = self.scryfall.oracle_id()
+        self.name = self.scryfall.name
+        self.oracleID = self.scryfall.oracle_id
         self.tags = []
 
 class cardList:
@@ -100,15 +101,16 @@ class cardList:
                 print(f"{i}, {self.allTags[i]}")
 
     def cull_tags(self):
+
+        delTags = []
+
         print("Do you want to remove tags with less than a number of cards? (y/n)")
         if input("> ") == 'y':
             print("What is the minimum number of cards a tag must have?")
             cardNo = int(input("> "))
-
-        delTags = []
-        for tag in self.allTags.keys():
-            if self.allTags[tag] < cardNo:
-                delTags.append(tag)
+            for tag in self.allTags.keys():
+                if self.allTags[tag] < cardNo:
+                    delTags.append(tag)
 
         for tag in delTags: 
             del self.allTags[tag]
@@ -119,15 +121,18 @@ class cardList:
         print("Do you want to remove some specific tags? (y/n)")
         if input("> ") == 'y':
             print("Input tags you want to remove (type 'exit' to exit): ")
-            delTags = []
-            while True:
-                query = input("> ")
-                if query == 'exit':
-                    break
-                elif query not in self.allTags.keys():
-                    print("Tag does not exist")
-                elif query in self.allTags.keys():
-                    delTags.append(query)
+        else:
+            return
+        
+        delTags = []
+        while True:
+            query = input("> ")
+            if query == 'exit':
+                break
+            elif query not in self.allTags.keys():
+                print("Tag does not exist")
+            elif query in self.allTags.keys():
+                delTags.append(query)
 
         for tag in delTags: 
             del self.allTags[tag]
@@ -149,20 +154,20 @@ class cardList:
         print("Opening tag database...")
 
         urlOracle = (f'https://api.scryfall.com/private/tags/oracle')
-        responseOracle = urlopen(urlOracle)
+        requestsOracle = requests.get(urlOracle)
 
         urlIllustration = (f'https://api.scryfall.com/private/tags/illustration')
-        responseIllustration = urlopen(urlIllustration)        
+        requestsIllustration = requests.get(urlIllustration)
         
         if self.mode == 'all':
-            self.oracleTags = json.loads(responseOracle.read())
-            self.illustrationTagsTags = json.loads(responseIllustration.read())
+            self.oracleTags = requestsOracle.json()
+            self.illustrationTags = requestsIllustration.json()
             
         elif self.mode == 'oracle':
-            self.oracleTags = json.loads(responseOracle.read())
+            self.oracleTags = requestsOracle.json()
 
         elif self.mode == 'illustration':
-            self.illustrationTagsTags = json.loads(responseIllustration.read())
+            self.illustrationTags = requestsIllustration.json()
 
         print("Tag database initialised!")
 
